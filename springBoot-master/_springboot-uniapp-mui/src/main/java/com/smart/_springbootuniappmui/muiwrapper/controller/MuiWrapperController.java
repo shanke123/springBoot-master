@@ -27,6 +27,7 @@ public class MuiWrapperController {
     //跳转主页面
     @GetMapping("main")
     public ModelAndView main() {
+
         ModelAndView modelAndView = new ModelAndView("muiwrapper/main");
         modelAndView.addObject("switchMode",switchMode);
         ArrayList arrayList = new ArrayList<>();
