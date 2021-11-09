@@ -1,0 +1,832 @@
+<!DOCTYPE html>
+<html style="background-color: #e5e9f0" lang="zh-CN" xmlns:th="https://www.thymeleaf.org"
+      xmlns:v-bind="http://www.w3.org/1999/xhtml">
+
+<head>
+    <meta charset="UTF-8">
+    <title>疫情防控监管预录入端</title>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <meta http-equiv="cache-control" content="no-cache"/>
+    <meta http-equiv="expires" content="0"/>
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, viewport-fit=cover">
+
+
+    <link rel="icon" th:href="@{/img/icons/favicon.ico}"/>
+
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap">
+
+
+    <link rel="stylesheet" th:href="@{/css/style.css}"/>
+    <!--h5适配-->
+    <!--   <script type="text/javascript" th:src="@{/plugins/lib-flexible/flexible.js}"></script>
+   -->
+    <script type="text/javascript" th:src="@{/plugins/jquery/jquery.min.js}"></script>
+    <link rel="stylesheet" th:href="@{/plugins/vue/index.css}"/>
+    <script src="https://cdn.bootcss.com/vConsole/3.2.0/vconsole.min.js"></script>
+
+    <style type="text/css">
+
+        html, body {
+            font-family: Arial, Helvetica, "STHeiti STXihei", "Microsoft YaHei", Tohoma, sans-serif;
+            background-color: #FFF;
+        }
+
+        .left {
+            left: 0
+        }
+
+        .card {
+            position: relative;
+
+            border-radius: 3px;
+            background-color: #fff;
+            box-shadow: 2px 3px 3px rgb(139, 138, 138);
+            overflow: hidden;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .card-padding {
+            padding: 20px 10px 0
+        }
+
+        /*.card :hover{
+            box-shadow: 2px 3px 10px rgb(36, 35, 35);
+        }*/
+        h1, h2, h3, h4, h5 {
+            color: #232429;
+        }
+
+        p {
+            line-height: 1.6875em;
+            margin: 0 0 20px 0;
+        }
+
+        .heard-flex {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 50px;
+        }
+
+        .select-txt {
+            padding: 0 .75rem;
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+    </style>
+
+</head>
+<body style="background-color: #e5e9f0">
+<div id="app" ref="app">
+
+    <!-- Header Area-->
+    <div class="header-area" id="headerArea">
+        <div class="heard-flex container h-100 d-flex align-items-center justify-content-between">
+            <!-- Back Button-->
+            <div class="back-button">
+            </div>
+            <!-- Page Title-->
+            <div class="page-heading">
+                <h6 class="mb-0">疫情防控监管预录入端</h6>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="page-content-wrapper" style="background-color: #e5e9f0">
+        <div class="container card-padding">
+            <div class="card" style="">
+                <van-cell-group>
+                    <van-field
+                            input-align="right"
+                            v-model="name"
+                            type="text"
+                            label="姓名"
+                            placeholder="请输入姓名"
+                    />
+                </van-cell-group>
+                <van-cell-group>
+                    <van-field
+                            input-align="right"
+                            v-model="idCard"
+                            type="text"
+                            label="身份证号"
+                            placeholder="请输入身份证号"
+                            @blur="onIdCardBlur"
+
+                    />
+                </van-cell-group>
+
+                <van-cell-group>
+                    <van-field
+                            input-align="right"
+                            v-model="phone"
+                            type="tel"
+                            label="手机号"
+                            placeholder="请输入手机号"
+
+                    />
+                </van-cell-group>
+            </div>
+        </div>
+
+        <div class="container card-padding">
+            <div class="card" style="padding:0 15px">
+                <div style="font-size:18px;color: #232429;margin: 20px 0;font-weight: bold;">近14天您是否接触新冠肺炎确诊或疑似患者?</div>
+                <van-radio-group v-model="firSelect" :max="2">
+                    <p>
+                        <van-radio checked-color="#ee0a24" name="是">是</van-radio>
+                    </p>
+
+                    <p>
+                        <van-radio checked-color="#ee0a24" name="否">否</van-radio>
+                    </p>
+
+                    <p>
+                        <van-radio checked-color="#ee0a24" name="不确定">不确定</van-radio>
+                    </p>
+                </van-radio-group>
+
+            </div>
+        </div>
+
+        <div class="container card-padding">
+            <div class="card" style="padding:0 15px">
+                <div style="font-size:18px;color: #232429;margin: 20px 0;font-weight: bold;">当前健康状况(可多选)</div>
+                <van-checkbox-group v-model="secSelect" :max="2">
+                    <p>
+                        <van-checkbox checked-color="#ee0a24" name="没有出现症状">没有出现症状</van-checkbox>
+                    </p>
+
+                    <p>
+                        <van-checkbox checked-color="#ee0a24" name="感冒样症状:乏力、咳嗽、发烧">感冒样症状:乏力、咳嗽、发烧</van-checkbox>
+                    </p>
+
+                    <p>
+                        <van-checkbox checked-color="#ee0a24" name="喘憋、呼吸急促<">喘憋、呼吸急促</van-checkbox>
+                    </p>
+                    <p>
+                        <van-checkbox checked-color="#ee0a24" name="恶心呕吐、腹泻">恶心呕吐、腹泻</van-checkbox>
+                    </p>
+                    <p>
+                        <van-checkbox checked-color="#ee0a24" name="心慌、胸闷">心慌、胸闷</van-checkbox>
+                    </p>
+                    <p>
+                        <van-checkbox checked-color="#ee0a24" name="结膜炎(红眼病样表现:眼睛涩、红、分泌物)">结膜炎(红眼病样表现:眼睛涩、红、分泌物)
+                        </van-checkbox>
+                    </p>
+                    <p>
+                        <van-checkbox checked-color="#ee0a24" name="其他症状">其他症状</van-checkbox>
+                    </p>
+                </van-checkbox-group>
+
+            </div>
+        </div>
+
+        <div class="container card-padding">
+            <div class="card" style="">
+                <div style="min-height:3rem;padding: 0.4rem;display: flex;align-items: center;justify-content: center">
+                    <van-uploader
+                            v-model="fileList"
+                            :after-read="afterRead"
+                            :before-read="beforeRead"
+                            :delete="onDeleteIma"
+                            multiple
+                            :max-count="1"
+
+                    >
+                        <van-button
+                                icon="plus"
+                                type="primary"
+                                color="#1989fa"
+
+                        >人脸照片录入处
+                        </van-button>
+
+                    </van-uploader>
+
+                </div>
+
+
+            </div>
+
+
+        </div>
+
+        <div class="select-txt container">
+            <van-row type="flex" justify="center" style="margin-top: 10px">
+                <van-checkbox v-model="checked" shape="square">
+                    <div class="context1">上述信息是我本人填写,本人对信息内容的真实性和完整性做出保证</div>
+                </van-checkbox>
+            </van-row>
+            <!-- <van-row type="flex" justify="center" style="margin-top: 10px">
+                 <div class="context">上传人脸头像用于人脸识别机,
+                     上传的照片要求纯色背景光线充足,
+                     保证照片的头像清晰可辨,
+                     照片应符合用户的真实面貌。
+                 </div>
+             </van-row>
+
+             <van-row type="flex" justify="center" style="margin-top: 10px">
+                 <div class="context">本网站所收集的部分公开于内网,部分作品是由用户自主上传，对此类作品仅提供使用平台，不为其版权负责。
+                 </div>
+             </van-row>
+
+
+             <van-row type="flex" justify="center" style="margin-top: 10px">
+                 <van-checkbox v-model="checked" shape="square">
+                     <div class="context1">我已详细阅读以上条款并同意</div>
+                 </van-checkbox>
+             </van-row>
+ -->
+            <!--<van-row type="flex" justify="center">
+                <van-button class="button2" type="info" @click="submit">上传</van-button>
+            </van-row>-->
+
+
+            <div style="margin: 16px;margin-top: 4em;">
+                <van-button
+                        :loading="isSubmit"
+                        block type="info"
+                        @click="submit"
+                >
+                    上传
+                </van-button>
+            </div>
+
+            <!--<div style="margin: 16px;">
+                <van-button block type="info" @click="loginOut">
+                    登出
+                </van-button>
+            </div>-->
+        </div>
+    </div>
+
+
+</div>
+</div>
+
+
+<script type="text/javascript" th:src="@{/plugins/jquery/jquery.min.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
+<script th:src="@{/plugins/vue/vue.min.js}"></script>
+<script th:src="@{/plugins/vue/vant.min.js}"></script>
+<script th:src="@{/plugins/vue/axios.min.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/sweetalert2/sweetalert2.all.min.js}"></script>
+<script th:src="@{/plugins/vue/area.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/qrcodejs/qrcode.js}"></script>
+
+<script th:inline="javascript">
+
+    let vConsole = new VConsole();
+
+    const GET_FILE = 'api/file/get'
+    const POST_PERSION = 'api/persion/save'
+    // const UPLOAD_FILE = 'api/file/localUpload/1'
+    const UPLOAD_FILE = 'api/file/localUpload'
+    //const BASE_URL = 'https://www.bhkj123.pro'
+    const BASE_URL = 'http://120.27.10.246:5200'
+
+    let Toast = Swal.mixin({
+        toast: true,
+        //position: 'top-end',
+        showConfirmButton: false,
+        timer: 1500
+    });
+
+
+    let getLocalhostPatht = () => {
+        let curPath = window.document.location.href;
+        let pathname = window.document.location.pathname;
+        let pos = curPath.indexOf(pathname);
+        let localhostPath = curPath.substring(0, pos);
+
+        console.log('localhostPath', localhostPath);
+        return localhostPath;
+    }
+
+
+    //图片地址转base64格式
+    let imgToBase64 = (url, cb) => {
+        var canvas = document.createElement('canvas'),
+            ctx = canvas.getContext('2d'),
+            img = new Image;
+
+        img.crossOrigin = 'Anonymous';
+        img.onload = function () {
+            canvas.height = img.height;
+            canvas.width = img.width;
+
+            canvas.fillStyle = '#FFF'
+            ctx.fillRect(0, 0, canvas.width, canvas.height)
+
+            ctx.drawImage(img, 0, 0);
+            var dataURL = canvas.toDataURL('image/png');
+            cb && cb(dataURL);
+            canvas = null;
+        };
+        img.src = url;
+    }
+    //base64转file对象
+    let base64toFile = (base, filename) => {
+        var arr = base.split(',');
+        var mime = arr[0].match(/:(.*?);/)[1];
+        var suffix = mime.split("/")[1];
+        var bstr = atob(arr[1]);
+        var n = bstr.length;
+        var u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        //转换成file对象
+        return new File([u8arr], `${filename}.${suffix}`, {type: mime});
+    }
+
+    let isNull = (str) => {
+        return str === null || str === undefined || str.trim() === '';
+    }
+
+    function validateIdCard(idCard) {
+        //15位和18位身份证号码的正则表达式
+        var regIdCard = /^(^[1-9]\d{7}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])\d{3}$)|(^[1-9]\d{5}[1-9]\d{3}((0\d)|(1[0-2]))(([0|1|2]\d)|3[0-1])((\d{4})|\d{3}[Xx])$)$/;
+        //如果通过该验证，说明身份证格式正确，但准确性还需计算
+        if (regIdCard.test(idCard)) {
+            if (idCard.length == 18) {
+                var idCardWi = new Array(7, 9, 10, 5, 8, 4, 2, 1, 6, 3, 7, 9, 10, 5, 8, 4, 2); //将前17位加权因子保存在数组里
+                var idCardY = new Array(1, 0, 10, 9, 8, 7, 6, 5, 4, 3, 2); //这是除以11后，可能产生的11位余数、验证码，也保存成数组
+                var idCardWiSum = 0; //用来保存前17位各自乖以加权因子后的总和
+                for (var i = 0; i < 17; i++) {
+                    idCardWiSum += idCard.substring(i, i + 1) * idCardWi[i];
+                }
+                var idCardMod = idCardWiSum % 11;//计算出校验码所在数组的位置
+                var idCardLast = idCard.substring(17);//得到最后一位身份证号码
+                //如果等于2，则说明校验码是10，身份证号码最后一位应该是X
+                if (idCardMod == 2) {
+                    if (idCardLast == "X" || idCardLast == "x") {
+                        return true;
+                        //alert("恭喜通过验证啦！");
+                    } else {
+                        return false;
+                        //alert("身份证号码错误！");
+                    }
+                } else {
+                    //用计算出的验证码与最后一位身份证号码匹配，如果一致，说明通过，否则是无效的身份证号码
+                    if (idCardLast == idCardY[idCardMod]) {
+                        //alert("恭喜通过验证啦！");
+                        return true;
+                    } else {
+                        return false;
+                        //alert("身份证号码错误！");
+                    }
+                }
+            }
+        } else {
+            //alert("身份证格式不正确!");
+            return false;
+        }
+    }
+
+    /* imgToBase64(imgUrl,base =>{
+         file = base64toFile(base,'图片')
+     })*/
+
+
+    let app = new Vue({
+        el: "#app",
+        data: {
+            fileList: [
+                /*  {
+                      url: 'https://img01.yzcdn.cn/vant/leaf.jpg',
+                      status: 'uploading',
+                      message: '上传中...',
+                  },
+                  {
+                      url: 'https://img01.yzcdn.cn/vant/tree.jpg',
+                      status: 'failed',
+                      message: '上传失败',
+                  },*/
+            ],
+
+            showNative: false,
+            checked: false,
+            isSubmit: false,
+            localFail: '',
+
+
+            name: '',
+            idCard: '',
+            phone: '',
+            firSelect: '',
+            secSelect: [],
+            ima: {},
+
+
+        },
+        methods: {
+            onIdCardBlur() {
+                let that = this;
+                let idCard = that.idCard.trim();
+                if (idCard) {
+                    if (!validateIdCard(idCard)) {
+                        /*Toast.fire({
+                            icon: 'error',
+                            title: '身份证格式错误,请重新输入身份证号'
+                        });*/
+
+                        that.$toast.fail({
+                            message: '身份证格式错误,请重新输入身份证号',
+                            position: 'center',
+                            duration: 1500
+                        });
+
+                        return
+                    }
+                }
+
+            },
+
+            submit() {
+
+                let that = this;
+
+
+                let {
+                    name, //名字
+                    idCard, //身份证号
+                    phone,  //手机号
+                    firSelect, //是否接触新冠
+                    secSelect, //当前健康状况
+                    localFail,  //文件
+                    ima,
+                    checked,
+                } = that.$data;
+
+                if (isNull(name.trim())) {
+                    /* Toast.fire({
+                         icon: 'error',
+                         title: '请输入姓名'
+                     });*/
+                    that.$toast.fail({
+                        message: '请输入姓名',
+                        position: 'center',
+                        duration: 1500
+                    });
+                    return
+                }
+
+                if (isNull(idCard.trim())) {
+                    /*Toast.fire({
+                        icon: 'error',
+                        title: '请输入身份证号'
+                    });*/
+                    that.$toast.fail({
+                        message: '请输入身份证号',
+                        position: 'center',
+                        duration: 1500
+                    });
+                    return
+                }
+
+
+                if (!validateIdCard(idCard.trim())) {
+                    /*Toast.fire({
+                        icon: 'error',
+                        title: '身份证格式错误,请重新输入身份证号'
+                    });*/
+                    that.$toast.fail({
+                        message: '身份证格式错误,请重新输入身份证号',
+                        position: 'center',
+                        duration: 1500
+                    });
+                    return
+                }
+
+                if (isNull(phone.trim())) {
+                    /*Toast.fire({
+                        icon: 'error',
+                        title: '请输入手机号'
+                    });*/
+                    that.$toast.fail({
+                        message: '请输入手机号',
+                        position: 'center',
+                        duration: 1500
+                    });
+                    return
+                }
+
+                /*正则验证11位手机号，^1[3|4|5|7|8|9] 指的是 1开头 第二位是3、4、5、7、8、9
+\d{9}$ 指的是 后9个数字 一共组成11位手机号码*/
+                if (!(/^1[3|4|5|7|8|9]\d{9}$/.test(phone.trim()))) {
+                    /*Toast.fire({
+                        icon: 'error',
+                        title: '手机号格式错误,请重新输入手机号'
+                    });*/
+                    that.$toast.fail({
+                        message: '手机号格式错误,请重新输入手机号',
+                        position: 'center',
+                        duration: 1500
+                    });
+                    return
+                }
+
+                if (isNull(firSelect)) {
+                    /*Toast.fire({
+                        icon: 'error',
+                        title: '请选择近14天您是否接触新冠肺炎确诊或疑似患者'
+                    });*/
+                    that.$toast.fail({
+                        message: '请选择近14天您是否接触新冠肺炎确诊或疑似患者',
+                        position: 'center',
+                        duration: 1500
+                    });
+                    return
+                }
+
+                if (secSelect.length == 0) {
+                    /*Toast.fire({
+                        icon: 'error',
+                        title: '请选择当前健康状况'
+                    });*/
+                    that.$toast.fail({
+                        message: '请选择当前健康状况',
+                        position: 'center',
+                        duration: 1500
+                    });
+                    return
+                }
+
+
+                if (!ima) {
+                    /*this.$toast("请上传文件");*/
+                    that.$toast.fail({
+                        message: '请点击人脸照片录入处',
+                        position: 'center',
+                        duration: 1500
+                    });
+                    return;
+                }
+
+                if (!checked) {
+                    /*this.$toast("请勾选上述信息是我本人填写");*/
+                    that.$toast.fail({
+                        message: '请勾选上述信息是我本人填写',
+                        position: 'center',
+                        duration: 1500
+                    });
+                    return;
+                }
+
+
+                //this.upLoaderImg(fail)
+
+                that.isSubmit = true;
+
+
+                let obj = {
+                    userName: name,
+                    idcard: idCard,
+                    phone,
+                    q1: firSelect,
+                    q2: secSelect.join(),
+                    fileName: ima.fileName,
+                    fileType: ima.fileType,
+                    filePath: BASE_URL + ima.filePath,
+                }
+
+                console.log('obj', {...obj})
+                console.log('ima', {...that.ima})
+
+
+                axios.post(POST_PERSION, obj)
+                    .then(res => {
+                        console.log('res', {...res})
+
+                        if(res.data.code && res.data.code == 200){
+
+                            that.$dialog.alert({
+                                message: '上传成功',
+                            }).then(() => {
+
+                                that.isSubmit = false;
+
+                                that.name = '';
+                                that.idCard = '';
+                                that.phone = '';
+                                that.firSelect = '';
+                                that.secSelect = [];
+                                that.ima = {};
+                                that.checked = false;
+                                that.fileList = [];
+                            });
+
+                        }
+
+
+
+                        /*  if (res.data.data && res.data.data.filePath) {
+                              this.fileList = [
+                                  {
+                                      url: `${getLocalhostPatht()}${res.data.data.filePath}`
+                                  }
+                              ]
+
+                              imgToBase64(`${getLocalhostPatht()}${res.data.data.filePath}`, base => {
+                                  this.localFail = base64toFile(base, new Date().getTime())
+                              })
+
+
+                          }*/
+                    }).catch(e => {
+                    that.isSubmit = false;
+                    that.$toast.fail({
+                        message: (e.response.data && e.response.data.message) || '系统错误',
+                        position: 'center',
+                        duration: 1500
+                    })
+                })
+
+                /*setTimeout(
+                    function () {
+                        that.$dialog.alert({
+                            message: '上传成功',
+                        }).then(() => {
+
+                            that.isSubmit = false;
+
+                            that.name = '';
+                            that.idCard = '';
+                            that.phone = '';
+                            that.firSelect = '';
+                            that.secSelect = [];
+                            that.ima = {};
+                            that.checked = false;
+                            that.fileList = [];
+                        });
+                    },
+                    1500
+                );*/
+
+
+            },
+
+            loginOut() {
+                axios.get('logOut')
+                    .then(res => {
+                        console.log('res', {...res})
+                        let homeHref = `location.href = \'toLogin\'`;
+                        setTimeout(homeHref, 1000);
+                    }).catch(e => {
+                    console.log('e', {...e})
+
+                    this.$toast.fail({
+                        message: (e.response.data && e.response.data.message) || '系统错误',
+                        position: 'center',
+                        duration: 1500
+                    })
+                })
+
+            },
+
+            onDeleteIma() {
+                this.localFail = ''
+            },
+
+            afterRead(file) {
+                /* file.status = 'uploading';
+                 file.message = '上传中...';
+
+                 setTimeout(() = > {
+                     file.status = 'failed';
+                 file.message = '上传失败';
+             }, 1000);*/
+
+                console.log('file', file.file)
+                console.log('file', file.type)
+                console.log('file', this.idCard)
+
+
+                this.localFail = file.file;
+                this.upLoaderImg(file.file)
+
+
+            },
+
+            //上传前校验
+            beforeRead(file) {
+                if (file.type !== 'image/jpeg' && file.type !== 'image/png' && file.type !== 'image/jpg') {
+                    this.$toast.fail({
+                        message: '只允许上传jpg/jpeg/png格式的图片',
+                        position: 'center',
+                        duration: 1500
+                    })
+                    return false;
+                }
+                return true
+            },
+
+            getImg() {
+                axios.post(GET_FILE)
+                    .then(res => {
+                        console.log('res', {...res})
+                        if (res.data.data && res.data.data.filePath) {
+                            this.fileList = [
+                                {
+                                    url: `${getLocalhostPatht()}${res.data.data.filePath}`
+                                }
+                            ]
+
+                            imgToBase64(`${getLocalhostPatht()}${res.data.data.filePath}`, base => {
+                                this.localFail = base64toFile(base, new Date().getTime())
+                            })
+
+
+                        }
+                    }).catch(e => {
+                    this.$toast.fail({
+                        message: (e.response.data && e.response.data.message) || '系统错误',
+                        position: 'center',
+                        duration: 1500
+                    })
+                })
+            },
+            upLoaderImg(file) {
+                let that = this;
+                let idcard = that.idCard;
+
+                let params = new FormData();
+                params.append('file', file)
+                params.append('moduleType', 1)
+                params.append('idcard', idcard)
+
+
+                console.log('params:',params)
+                console.log('file:',file)
+
+                let config = {
+                    headers: {'Content-Type': 'multipart/form-data'}
+                }
+
+                that.isSubmit = true;
+                axios.post(UPLOAD_FILE, params, config)
+                    .then(res => {
+                        console.log('res', {...res})
+
+                        if (res.data.data && res.data.data.filePath) {
+                            this.fileList = [
+                                {
+                                    url: `${getLocalhostPatht()}${res.data.data.filePath}`
+                                }
+                            ]
+
+                            this.ima = res.data.data;
+
+                            this.$toast.success("上传成功");
+                            /*  imgToBase64(`${getLocalhostPatht()}${res.data.data.filePath}`, base => {
+                                  this.localFail = base64toFile(base, new Date().getTime())
+                              })*/
+
+
+                        }
+
+                        that.localFail = '',
+                            that.isSubmit = false;
+                    }).catch(e => {
+                    console.log('e', {...e})
+                    this.$toast.fail({
+                        message: (e.response.data && e.response.data.message) || '系统错误',
+                        position: 'center',
+                        duration: 1500
+                    })
+
+                    that.isSubmit = false;
+                })
+
+            },
+
+            showNavigation() {
+
+            },
+            closeFn() {
+                console.log('closeFn')
+                this.showNative = false
+            },
+        },
+        // 页面加载之后执行
+        mounted() {
+        },
+        created() {
+            console.log(111)
+            //this.getImg()
+        },
+        watch: {}
+    })
+
+</script>
+</body>
+</html>

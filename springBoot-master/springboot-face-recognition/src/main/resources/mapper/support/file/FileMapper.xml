@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.springbootfacerecognition.module.support.file.FileDao">
+
+
+    <select id="selectFileByUser" parameterType="com.smart.springbootfacerecognition.module.support.file.domain.entity.UserEntity"
+            resultType="com.smart.springbootfacerecognition.module.support.file.domain.entity.FileEntity">
+        SELECT t.* from
+        (
+        SELECT * FROM t_file where 	user_id =#{cardUserId} ORDER BY create_time DESC
+        ) t WHERE rownum = 1
+    </select>
+
+    <insert id="insertFileEntityBatch" useGeneratedKeys="true" keyProperty="id" parameterType="java.util.List">
+        INSERT INTO t_file (
+        file_id,
+        idcard,
+        user_name,
+        file_name,
+        file_type,
+        file_size,
+        file_path,
+        create_time,
+        update_time
+        )
+        VALUES
+        <foreach collection="list" item="item" index="index" separator=",">
+            (SEQ_FILE_ID.nextval,#{item.idcard},#{item.userName},#{item.fileName},#{item.fileType},#{item.fileSize},#{item.filePath},#{item.createTime,jdbcType=TIMESTAMP},#{item.updateTime,jdbcType=TIMESTAMP})
+        </foreach>
+    </insert>
+
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="file_id"
+            parameterType="com.smart.springbootfacerecognition.module.support.file.domain.entity.FileEntity">
+        INSERT INTO t_file (
+        file_id,
+        idcard,
+        user_name,
+        file_name,
+        file_type,
+        file_size,
+        file_path,
+        create_time,
+        update_time
+        )
+        VALUES(
+            SEQ_FILE_ID.nextval,
+            #{idcard,jdbcType=VARCHAR},
+            #{userName,jdbcType=VARCHAR},
+            #{fileName,jdbcType=VARCHAR},
+            #{fileType,jdbcType=VARCHAR}，
+            #{fileSize,jdbcType=VARCHAR},
+            #{filePath,jdbcType=VARCHAR},
+            #{createTime,jdbcType=TIMESTAMP},
+            #{updateTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+
+
+</mapper>

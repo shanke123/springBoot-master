@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.springbootfacerecognition.module.business.subscribe.SubscribeDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="SUBSCRIBE_ID"
+            parameterType="com.smart.springbootfacerecognition.module.business.subscribe.domain.entity.SubscribeEntity">
+        INSERT INTO T_SUBSCRIBE (
+        SUBSCRIBE_ID,
+        ID,
+        METHOD,
+        STATUS,
+        DATA,
+        CREATE_TIME
+        )
+        VALUES(
+            SEQ_subscribe_id.nextval,
+            #{id,jdbcType=BIGINT},
+            #{method,jdbcType=VARCHAR},
+            #{status,jdbcType=BIGINT}，
+            #{data,jdbcType=VARCHAR},
+            #{createTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+</mapper>

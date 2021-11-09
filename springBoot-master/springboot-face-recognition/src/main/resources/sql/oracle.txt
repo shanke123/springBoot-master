@@ -1,0 +1,48 @@
+CREATE TABLE t_file (
+  file_id NUMBER(20, 0) NOT NULL,
+  idcard varchar2(50) NOT NULL,
+  user_name varchar2(50) NOT NULL,
+  file_name varchar2(50) NOT NULL,
+  file_type varchar2(50) NOT NULL,
+  file_size varchar2(255) NOT NULL,
+  file_path varchar2(255) NOT NULL,
+  create_time timestamp,
+  update_time timestamp,
+  PRIMARY KEY (file_id)
+);
+
+CREATE SEQUENCE SEQ_file_id increment by 1 start with 100
+
+CREATE TABLE t_subscribe (
+  subscribe_id NUMBER(20, 0) NOT NULL,
+  id NUMBER(20, 0) NOT NULL,
+  method varchar2(50) NOT NULL,
+  status NUMBER(20, 0) NOT NULL,
+  data varchar2(3000) NOT NULL,
+  create_time timestamp,
+  PRIMARY KEY (subscribe_id)
+);
+
+CREATE SEQUENCE SEQ_subscribe_id increment by 1 start with 100
+
+
+
+CREATE TABLE t_persion (
+  persion_id NUMBER(20, 0) NOT NULL,
+  user_name varchar2(50) NOT NULL,
+  idcard varchar2(50) NOT NULL,
+  phone varchar2(50) NOT NULL,
+  q1  varchar2(50),
+  q2  varchar2(50),
+
+  file_name varchar2(50),
+  file_type varchar2(50),
+  file_size varchar2(255),
+  file_path varchar2(255),
+
+  create_time timestamp,
+  update_time timestamp,
+  PRIMARY KEY (persion_id)
+);
+
+CREATE SEQUENCE SEQ_persion_id increment by 1 start with 100

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.smart.springbootfacerecognition.module.business.persion.PersionDao">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="PERSION_ID"
+            parameterType="com.smart.springbootfacerecognition.module.business.persion.domain.entity.PersionEntity">
+        INSERT INTO T_PERSION (
+            PERSION_ID,
+            USER_NAME,
+            IDCARD,
+            PHONE,
+            Q1,
+            Q2,
+            FILE_NAME,
+            FILE_TYPE,
+            FILE_SIZE,
+            FILE_PATH,
+            CREATE_TIME,
+            UPDATE_TIME
+        )
+        VALUES(
+            SEQ_persion_id.nextval,
+            #{userName,jdbcType=VARCHAR},
+            #{idcard,jdbcType=VARCHAR},
+            #{phone,jdbcType=VARCHAR},
+            #{q1,jdbcType=VARCHAR},
+            #{q2,jdbcType=VARCHAR},
+            #{fileName,jdbcType=VARCHAR},
+            #{fileType,jdbcType=VARCHAR},
+            #{fileSize,jdbcType=VARCHAR},
+            #{filePath,jdbcType=VARCHAR},
+
+            #{createTime,jdbcType=TIMESTAMP},
+            #{updateTime,jdbcType=TIMESTAMP}
+        )
+    </insert>
+</mapper>

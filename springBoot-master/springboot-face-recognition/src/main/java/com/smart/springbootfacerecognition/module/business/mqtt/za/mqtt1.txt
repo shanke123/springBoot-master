@@ -1,0 +1,38 @@
+mqtt
+    发布者 publisher发布消息
+    订阅者 subscribers接收消息
+    代理  broker
+
+    MQTT client  发布者和订阅者都属于MQTT Client
+    MQTT broker
+        broker 负责接收所有消息，过滤消息，
+        确定是哪个 client 订阅了每条消息，并将消息发送给对应的 client，
+    MQTT Connection
+        MQTT 是基于 TCP/IP 协议基础之上的,所以 MQTT 的 client 和 broker 都需要 TCP/IP 协议的支持。
+        如果要发起连接的话，那么 client 就会向 broker 发起 CONNECT 消息，
+        代理会使用 CONNACK 消息和状态码进行响应。
+
+消息报文
+MQTT 的消息报文主要分为 CONNECT 和 CONNACK 消息。
+    CONNECT
+        client 向 broker 发送 CONNECT 消息
+        CONNECT包含这些信息
+            ClientId:这个就是每个客户端的 ID 标识(ec43d839-23e8-4291-8726-defcdc04c037)
+            Username/Password
+    CONNACK
+        当 broker 收到 CONNECT 消息时，
+        它有义务回复 CONNACK 消息进行响应。CONNACK 消息包括两部分内容
+            SessionPresent
+            ReturnCode
+
+
+qos是mqtt 对消息处理的几种机制分为0,1,2
+    其中0表示的是订阅者没收到消息不会再次发送,消息会丢失,
+    1表示的是会尝试重试,一直到接收到消息,但这种情况可能导致订阅者收到多次重复消息,
+    2相比多了一次去重的动作,确保订阅者收到的消息有一次
+当然,这三种模式下的性能肯定也不一样,qos=0是最好的,2是最差的 。
+
+作者：无剑_君
+链接：https://www.jianshu.com/p/4de458ce039b
+来源：简书
+著作权归作者所有。商业转载请联系作者获得授权，非商业转载请注明出处。

@@ -1,0 +1,66 @@
+server:
+  port: 10091
+  servlet:
+    context-path: /test
+
+spring:
+  application:
+    name: springboot-mybatis
+  thymeleaf:
+    cache: false  #关闭页面缓存
+    prefix: classpath:/view/mobile/  #thymeleaf访问根路径
+    mode: LEGACYHTML5
+  servlet:
+    multipart:
+      max-file-size: 50MB
+      max-request-size: 50MB
+
+  mqtt:
+    username: admin
+    password: password
+    #MQTT-服务器连接地址，如果有多个，用逗号隔开，如：tcp://127.0.0.1:61613，tcp://192.168.2.133:61613
+    url: tcp://47.107.170.150:61613
+    client:
+      #MQTT-连接服务器默认客户端ID
+      id: ec43d839-23e8-4291-8726-defcdc04c037
+    default:
+      #MQTT-默认的消息推送主题，实际可在调用接口时指定
+      publish:
+        topic: attendance/jiminate3/ec43d839-23e8-4291-8726-defcdc04c037/request/1
+      subscribe:
+        topic: attendance/jiminate3/ec43d839-23e8-4291-8726-defcdc04c037/response/+
+      #连接超时
+    completionTimeout: 3000
+
+
+
+  datasource: #数据库相关
+    url: jdbc:oracle:thin:@120.27.10.246:1521:ORCL
+    #username: FEBS
+    username: NOTIFICATION
+    password: 123
+    driver-class-name: oracle.jdbc.OracleDriver
+  mvc:
+    date-format: yyyy-MM-dd HH:mm:ss #mvc接收参数时对日期进行格式化
+
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss #jackson对响应回去的日期参数进行格式化
+    time-zone: GMT+8
+
+#如果采用xml配置方式则需要进行加载扫描 xml文件放在src/main/java目录或者放在resource目录都可以，指定好路径就可以
+mybatis:
+  # 配置mapper的扫描，找到所有的mapper.xml映射文件
+  mapperLocations: classpath:mapper/**/*.xml
+  # 加载全局的配置文件
+  configLocation: classpath:conf/mybatis/mybatis-config.xml
+
+#10485760/1024/1024  10   10M
+webConstant:
+  maxUploadSize: 10485760
+  Encoding: UTF-8
+  #压缩后图片大小180k
+  compressionSize: 180
+file-upload-service:
+  path: /yiwuimage/home/upload/
+  #register-person-url = http://10.0.0.5:8081/webfnzn/fnkx/cloud/registerPersonInfo/.uj?appid=11eb-86cb-9f1fdb3c-bcf0-9310ad8bb352
+register-person-url: http://192.168.250.106:8081/webfnzn/fnkx/cloud/registerPersonInfo/.uj?appid=11ec-04b3-d0bdf5e6-b4a6-43427ef88a6d

@@ -1,0 +1,64 @@
+https://juejin.cn/post/6976441705067184135#heading-4
+
+MQTT 基础
+    发布 - 订阅模式
+        发布者 publisher发布消息
+        订阅者 subscribers接收消息
+        他们之间的交流由第三方组件 broker 代理
+    消息过滤
+        broker 能够对消息进行过滤，使每个订阅者只接收自己感兴趣的消息
+        基于主题的过滤
+            MQTT 是基于 subject 的消息过滤的，每条消息都会有一个 topic ，
+            接收客户端会向 borker 订阅感兴趣的 topic，
+            订阅后，broker 就会确保客户端收到发布到 topic 中的消息。
+        基于内容的过滤
+        基于类型的过滤
+
+MQTT 重要概念
+    MQTT client
+        当我们讨论关于客户端的概念时，一般指的就是 MQTT Client，publisher 和 subscriber
+        都属于 MQTT Client。
+    MQTT broker
+        broker 负责接收所有消息，过滤消息，确定是哪个 client 订阅了每条消息，
+        并将消息发送给对应的 client，broker 还负责保存会话数据，
+        这些数据包括订阅的和错过的消息。broker 还负责客户端的身份验证和授权。
+    MQTT Connection
+        MQTT 是基于 TCP/IP 协议基础之上的，所以 MQTT 的 client 和 broker 都需要 TCP/IP 协议的支持
+        MQTT 的连接总是在 client 和 broker 之间进行，client 和 client 之间并不会相互连接。
+        如果要发起连接的话，那么 client 就会向 broker 发起 CONNECT 消息，
+        代理会使用 CONNACK 消息和状态码进行响应。
+        一旦 client 和 broker 的连接建立后，broker 就会使客户端的连接一直处于打开状态，
+        直到 client 发出断开命令或者连接中断。
+
+消息报文
+    MQTT 的消息报文主要分为 CONNECT 和 CONNACK 消息。
+    CONNECT
+        为了初始化连接，需要 client 向 broker 发送 CONNECT 消息
+        一个 MQTT 客户端发送一条 CONNECT 连接，这条 CONNECT 连接可能会包含下面这些信息：
+            ClientId：显而易见，这个就是每个客户端的 ID 标识，也就是连接到 MQTT broker 的每个 client
+    CONNACK
+        当 broker 收到 CONNECT 消息时，
+        它有义务回复 CONNACK 消息进行响应。CONNACK 消息包括两部分内容
+            SessionPresent
+            ReturnCode
+
+消息类型
+    发布
+        当 MQTT client 在连接到 broker 之后就可以发送消息了
+        每条消息都应该包含一个 topic
+        每条消息还会包含一个负载(Payload)，Payload 中包含要以字节形式发送的数据
+        MQTT 是数据无关性的，也就是说数据是由发布者 - publisher 决定要发送的是 XML 、JSON 还是二进制数据、文本数据。
+        MQTT 中的 PUBLISH 消息结构如下
+            Packet Identifier
+            TopicName
+            Qos：这个数字表示的是服务质量水平，服务质量水平有三个等级：0、1 和 2，
+                服务级别决定了消息到达 client 或者 broker 的保证类型，
+                来决定消息是否丢失。
+            RetainFlag
+            Payload：这个是每条消息的实际内容。
+
+    订阅
+        client 会向 broker 发送 SUBSCRIBE 消息来接收有关感兴趣的 topic，
+        这个 SUBSCRIBE 消息非常简单，它包含了一个唯一的数据包标识和一个订阅列表。
+        Packet Identifier
+        ListOfSubscriptions
